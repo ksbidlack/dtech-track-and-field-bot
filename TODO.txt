@@ -1,7 +1,5 @@
 TODO (If you'd like to suggest something, click the "Issues" tab and submit an issue with the "feature" label!)
 
 - Make it so token.pkl isn't stored in the repository - maybe just add to .gitignore?
-- Change gcal_man to calendar_management
-- Make a new directory called "bot", change bot.py to main.py and move it into the new "bot" folder
 - Get code from check_events.py and move to bot.py accordingly through the task loop. check_events.py can be deleted
   - Mess around with the task loop. Time should work fine (in Time repl), task loop can use a task.start() (I think?) The rest of the code is in the check_events.py
