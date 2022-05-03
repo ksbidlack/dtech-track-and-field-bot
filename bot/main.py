@@ -1,7 +1,7 @@
 import os
 import datetime
+import asyncio
 
-import pause
 import discord
 from discord.ext import tasks
 
@@ -24,32 +24,27 @@ async def on_ready():
     print(f"{client.user} has connected to Discord!")
     print(f"Client is connected to guild {guild.name}(id: {guild.id})")
 
-    check_calendar.start()
 
+    # Functions
+    async def check_calendar():
+        delta = calendar_management.google_calendar.get_delta()
 
-@tasks.loop(seconds=86400)
-async def check_calendar():
-    calendar = calendar_management.google_calendar.get_calendar()
-    events = calendar_management.google_calendar.get_events(calendar)
-    message = calendar_management.google_calendar.parse_message(events)
+        calendar = calendar_management.google_calendar.get_calendar()
+        events = calendar_management.google_calendar.get_events(calendar)
+        message = calendar_management.google_calendar.parse_message(events)
 
-    print("Announcing")
-    schedule_channel = client.get_channel(id=957412669940441139)
-    schedule_channel.send(message)
+        await asyncio.sleep(delta)
 
-
-@check_calendar.before_loop
-async def startup():
-    if datetime.datetime.now().hour < 6:
-        print("It's before 6am, task loop will start at 6am")
-
-        today_6am = datetime.datetime.now().replace(hour=6)
-        pause.until(today_6am)
-    else:
-        print("It's after 6am, task loop will start tomorrow.")
+        schedule_channel = client.get_channel(id=957412669940441139)
         
-        tomorrow_6am = calendar_management.google_calendar.get_tomorrow_6am()
-        pause.until(tomorrow_6am)
+        print("Announcing")
+        await schedule_channel.send(message)
+
+
+    print(f"Next announcement in {calendar_management.google_calendar.get_delta()} seconds")
+    print("Calendar started")
+
+    await check_calendar()
 
 
 if __name__ == "__main__":
