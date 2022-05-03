@@ -14,6 +14,7 @@ GUILD = os.environ["DISCORD_GUILD"]
 # Discord initialization
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     # determine guild and print when connection succeeds
