@@ -1,1 +1,5 @@
 TODO (If you'd like to suggest something, click the "Issues" tab and submit an issue with the "feature" label!)
+- Change schedule_channel to an environment variable
+- Create a test bot/app and test guild
+- Create a shell script to clone the repository and create a new detached screen with the bot running
+- Convert 24 hour time to 12 hour time when the message is parsed in google_calendar.py
