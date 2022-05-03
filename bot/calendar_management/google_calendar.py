@@ -40,7 +40,7 @@ def parse_message(events):
     else:
         message = f"""<@&970492351711703120> You have {len(events)} event(s) today! Here's an overview:\n"""
         for index, event in enumerate(events):
-            message += f'Event #{index}: {event["summary"]}, Location: {event["location"]}, Time: {str(event["start"]["dateTime"])[-14:-6]}\n'
+            message += f'Event #{index + 1}: {event["summary"]}, Location: {event["location"]}, Time: {str(event["start"]["dateTime"])[-14:-6]}\n'
     
     return message
     
