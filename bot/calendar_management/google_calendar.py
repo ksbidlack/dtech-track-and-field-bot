@@ -1,19 +1,15 @@
-"""Functions related to the google calendar"""
-
 import os
 import pickle
 import datetime
 import dateutil.parser
 
-import pause
-
 from apiclient.discovery import build
+
+import settings
 
 
 def get_calendar():
-    PATH_TO_PKL = os.environ["PATH_TO_PKL"]
-
-    credentials = pickle.load(open(PATH_TO_PKL, "rb"))
+    credentials = pickle.load(open(settings.PATH_TO_TOKEN, "rb"))
     service = build("calendar", "v3", credentials=credentials)
     result = service.calendarList().list().execute()
 
@@ -35,12 +31,26 @@ def get_events(calendar):
 
 
 def parse_message(events):
-    if events == []:
-        message = f"""<@&970492351711703120> You have no events today!"""
+    if not events:
+        message = f'<@&970492351711703120> You have no events today!'
+    elif len(events) == 1:
+        time = str(event["start"]["dateTime"])[-14:-9]
+        twelve_hour_time = datetime.datetime.strptime(time, "%H:%M")
+        twelve_hour_time.strftime("%I:%M %p")
+
+        message = f'<@&970492351711703120> You have {event["summary"]} today!\n'
+        message += f'Location: {event["location"]}\n'
+        message += f'Time: {str(twelve_hour_time)}\n'
     else:
         message = f"""<@&970492351711703120> You have {len(events)} event(s) today! Here's an overview:\n"""
         for index, event in enumerate(events):
-            message += f'Event #{index}: {event["summary"]}, Location: {event["location"]}, Time: {str(event["start"]["dateTime"])[-14:-6]}\n'
+            time = str(event["start"]["dateTime"])[-14:-9]
+            twelve_hour_time = (time, "%H:%M")
+            twelve_hour_time.strftime("%I:%M %p")
+
+            message += f'\nEvent #{index + 1}: {event["summary"]}\n'
+            message += f'Location: {event["location"]}\n'
+            message += f'Time: {str(twelve_hour_time)}\n'
     
     return message
     
