@@ -10,7 +10,7 @@ from apiclient.discovery import build
 
 
 def get_calendar():
-    credentials = pickle.load(open("token.pkl", "rb"))
+    credentials = pickle.load(open("~/token.pkl", "rb"))
     service = build("calendar", "v3", credentials=credentials)
     result = service.calendarList().list().execute()
 
