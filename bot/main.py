@@ -29,20 +29,19 @@ async def on_ready():
     async def check_calendar():
         delta = calendar_management.google_calendar.get_delta()
 
+        print(f"Next announcement in {round(delta)} seconds!")
+        await asyncio.sleep(delta)
+
         calendar = calendar_management.google_calendar.get_calendar()
         events = calendar_management.google_calendar.get_events(calendar)
         message = calendar_management.google_calendar.parse_message(events)
-
-        await asyncio.sleep(delta)
-
         schedule_channel = client.get_channel(id=957412669940441139)
         
-        print("Announcing")
+        print("Announcing!")
         await schedule_channel.send(message)
-
-
-    print(f"Next announcement in {calendar_management.google_calendar.get_delta()} seconds")
-    print("Calendar started")
+        
+        # start the function again
+        await check_calendar()
 
     await check_calendar()
 
