@@ -3,6 +3,7 @@
 import pickle
 import datetime
 import dateutil.parser
+import pathlib
 
 import pause
 
@@ -10,7 +11,10 @@ from apiclient.discovery import build
 
 
 def get_calendar():
-    credentials = pickle.load(open("~/token.pkl", "rb"))
+    root = pathlib.Path("~")
+    path_to_token = root / "token.pkl"
+
+    credentials = pickle.load(open(path_to_token, "rb"))
     service = build("calendar", "v3", credentials=credentials)
     result = service.calendarList().list().execute()
 
