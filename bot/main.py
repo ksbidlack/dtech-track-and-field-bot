@@ -19,34 +19,47 @@ async def on_ready():
         if guild.name == settings.DISCORD_GUILD:
             break
 
-
     print(f"{client.user} has connected to Discord!")
     print(f"Client is connected to guild {guild.name}(id: {guild.id})")
 
 
     # calendar loop, announces events every day
-    async def check_calendar():
-        delta = calendar_management.google_calendar.get_delta()
+    async def check_calendar(TESTING):
+        if not TESTING:
+            delta = calendar_management.google_calendar.get_delta()
 
-        print(f"Next announcement in {round(delta)} seconds!")
-        await asyncio.sleep(delta)
-        
-        schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
+            print(f"Next announcement in {round(delta)} seconds!\n")
+            await asyncio.sleep(delta)
+            
+            schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
 
-        calendar = calendar_management.google_calendar.get_calendar()
-        events = calendar_management.google_calendar.get_events(calendar)
-        message = calendar_management.google_calendar.parse_message(events)
-        
-        print("Announcing!")
-        await schedule_channel.send(message)
-        
-        del schedule_channel
-        del calendar
-        del events
-        del message
+            calendar = calendar_management.google_calendar.get_calendar()
+            events = calendar_management.google_calendar.get_events(calendar)
+            message = calendar_management.google_calendar.parse_message(events)
+            
+            print(f"Announcing! Message: \n {message}")
+            await schedule_channel.send(message)
+            
+            del schedule_channel
+            del calendar
+            del events
+            del message
 
-        await check_calendar()
+            await check_calendar(True)
+        else:
+            schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
 
+            calendar = calendar_management.google_calendar.get_calendar()
+            events = calendar_management.google_calendar.get_events(calendar)
+            message = calendar_management.google_calendar.parse_message(events)
+            
+            print(f"Announcing! Message: {message}")
+            await schedule_channel.send(message)
+            
+            del schedule_channel
+            del calendar
+            del events
+            del message
     
     await check_calendar()
 

@@ -13,3 +13,4 @@ PATH_TO_TOKEN = os.environ["PATH_TO_TOKEN"]
 
 # other variables
 SCHEDULE_CHANNEL_ID = int(os.environ["SCHEDULE_CHANNEL_ID"])
+TESTING = os.environ["TESTING"]
