@@ -10,9 +10,6 @@ from apiclient.discovery import build
 import settings
 
 
-def find_day(date_time):
-    return calendar.day_name[date_time.weekday()]
-
 def get_delta(date_time):
     now = datetime.datetime.now()
     delta = date_time - now
@@ -20,7 +17,6 @@ def get_delta(date_time):
 
 
 def get_events(date_time):
-    """Retrieves events from date, where date is a datetime object."""
     events = []
     date = date_time.date()
 
@@ -32,11 +28,10 @@ def get_events(date_time):
     calendar_id = result["items"][6]["id"]
     calendar = service.events().list(calendarId=calendar_id).execute()
 
-
+    # adds events to the events list and returns it
     for event in calendar["items"]:
-        if event["status"] != "cancelled":
-            event_date = str(event["start"]["dateTime"])[0:10]
-            if event_date == str(date):
+        event_date = str(event["start"]["dateTime"])[0:10]
+        if event["status"] != "cancelled" and event_date == str(date):
                 events.append(event)
 
     return events
@@ -67,11 +62,11 @@ def parse_message(events, date_time):
     else:
         print("The system encountered an error")
 
-    if find_day(date_time) == "Monday":
+    if calendar.day_name[date_time.weekday()] == "Monday":
         five_days_from_today = datetime.datetime.strptime(str(date_time.date()), "%Y-%m-%d") + datetime.timedelta(days=5)
         for event in get_events(five_days_from_today):
-            if "CCS" or "PSAL" in event["summary"]:
-                message += f"\n**Reminder! There is a meet on Saturday: {event['summary']}**"
+            if "Meet" in event["summary"]:
+                message += f"\n\n**Reminder! There is a meet on Saturday: {event['summary']}**"
 
     return message
 
