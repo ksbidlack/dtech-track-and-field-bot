@@ -7,7 +7,6 @@ from discord.ext import tasks
 import settings
 import calendar_management.google_calendar
 
-
 client = discord.Client()
 
 
@@ -20,8 +19,7 @@ async def on_ready():
             break
 
     print(f"{client.user} has connected to Discord!")
-    print(f"Client is connected to guild {guild.name}(id: {guild.id})")
-
+    print(f"Client is connected to guild {guild.name}(id: {guild.id})\n")
 
     # calendar loop, announces events every day
     async def check_calendar(TESTING):
@@ -34,10 +32,10 @@ async def on_ready():
             schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
 
             calendar = calendar_management.google_calendar.get_calendar()
-            events = calendar_management.google_calendar.get_events(calendar)
+            events = calendar_management.google_calendar.get_events(calendar, datetime.datetime.now())
             message = calendar_management.google_calendar.parse_message(events)
             
-            print(f"Announcing! Message: \n {message}")
+            print(f"Announcing! Message:\n{message}\n")
             await schedule_channel.send(message)
             
             del schedule_channel
@@ -50,10 +48,10 @@ async def on_ready():
             schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
 
             calendar = calendar_management.google_calendar.get_calendar()
-            events = calendar_management.google_calendar.get_events(calendar)
+            events = calendar_management.google_calendar.get_events(calendar, datetime.datetime.strptime(str(datetime.datetime.now().date()), "%Y-%m-%d").date() - datetime.timedelta(days=2))
             message = calendar_management.google_calendar.parse_message(events)
             
-            print(f"Announcing! Message: {message}")
+            print(f"Announcing! Message:\n{message}\n")
             await schedule_channel.send(message)
             
             del schedule_channel

@@ -1,11 +1,17 @@
 import sys
 import pickle
 import datetime
-import dateutil.parser
+import calendar
+import dateutil
 
 from apiclient.discovery import build
 
 import settings
+
+
+def find_weekday(date):
+    day = datetime.datetime.strptime(str(date), "%Y-%m-%d").weekday()
+    return calendar.day_name[day]
 
 
 def get_calendar():
@@ -20,13 +26,13 @@ def get_calendar():
     return result
 
 
-def get_events(calendar):
-    """Retrieves events from current date"""
+def get_events(calendar, date):
+    """Retrieves events from date"""
     events = []
 
     for event in calendar["items"]:
         if event["status"] != "cancelled":
-            if str(event["start"]["dateTime"])[0:10] == str(datetime.datetime.now())[0:10]:
+            if str(event["start"]["dateTime"])[0:10] == str(date)[0:10]:
                 events.append(event)
 
     return events
@@ -56,6 +62,13 @@ def parse_message(events):
             message += f'**Location:** {event["location"]}\n'
             message += f'**Time:** {str(twelve_hour_time)}\n'
     
+    if find_weekday(datetime.datetime.now()) == "Monday":
+        five_days_from_today = str(datetime.datetime.strptime(str(datetime.datetime.now().date()), "%Y-%m-%d").date() + datetime.timedelta(days=5))
+
+        calendar = get_calendar()
+        for event in get_events(calendar, five_days_from_today):
+            if "CCS" or "PSAL" in event["summary"]:
+                message += f"\n**Reminder! There is a meet on Saturday: {event['summary']}**"
     return message
     
 
