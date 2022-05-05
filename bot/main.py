@@ -61,7 +61,7 @@ async def on_ready():
             del events
             del message
     
-    await check_calendar()
+    await check_calendar(settings.TESTING)
 
 
 if __name__ == "__main__":
