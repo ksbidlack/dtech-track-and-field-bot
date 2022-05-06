@@ -25,7 +25,8 @@ async def on_ready():
         await calendar_management.google_calendar.announce_calendar(schedule_channel, datetime.datetime.now())
     else:
         schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
-        tomorrow_at_6am = date_time.replace(hour=6, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
+        now = datetime.datetime.now()
+        tomorrow_at_6am = now.replace(hour=6, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
         await calendar_management.google_calendar.announce_calendar(schedule_channel, tomorrow_at_6am)
         
 
