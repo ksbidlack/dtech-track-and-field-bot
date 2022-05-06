@@ -30,8 +30,9 @@ def get_events(date_time):
 
     # adds events to the events list and returns it
     for event in calendar["items"]:
-        event_date = str(event["start"]["dateTime"])[0:10]
-        if event["status"] != "cancelled" and event_date == str(date):
+        if event["status"] != "cancelled":
+            event_date = str(event["start"]["dateTime"])[0:10]
+            if event_date == str(date):
                 events.append(event)
 
     return events
@@ -66,7 +67,7 @@ def parse_message(events, date_time):
         five_days_from_today = datetime.datetime.strptime(str(date_time.date()), "%Y-%m-%d") + datetime.timedelta(days=5)
         for event in get_events(five_days_from_today):
             if "Meet" in event["summary"]:
-                message += f"\n\n**Reminder! There is a meet on Saturday: {event['summary']}**"
+                message += f"\n**Reminder! There is a meet on Saturday: {event['summary']}**"
 
     return message
 
@@ -74,7 +75,7 @@ def parse_message(events, date_time):
 async def announce_calendar(channel, announce_time):
         delta_in_seconds = get_delta(announce_time).total_seconds()
         
-        print(f"Next announcement in {round(delta_in_seconds)} seconds!\n")
+        print(f"Next announcement in {round(delta_in_seconds)} seconds!")
         await asyncio.sleep(delta_in_seconds)
         
         events = get_events(announce_time)

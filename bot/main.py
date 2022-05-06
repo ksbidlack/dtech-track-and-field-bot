@@ -18,7 +18,7 @@ async def on_ready():
             break
 
     print(f"{client.user} has connected to Discord!")
-    print(f"Client is connected to guild {guild.name}(id: {guild.id})\n")
+    print(f"Client is connected to guild {guild.name}(id: {guild.id})")
     if settings.TESTING:
         # this date will vary, depending on what is being tested
         schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
