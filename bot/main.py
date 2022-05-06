@@ -22,7 +22,7 @@ async def on_ready():
     if settings.TESTING:
         # this date will vary, depending on what is being tested
         schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
-        await calendar_management.google_calendar.announce_calendar(schedule_channel, datetime.datetime.now())
+        await calendar_management.google_calendar.announce_calendar(schedule_channel, datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=1))
     else:
         schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
         now = datetime.datetime.now()

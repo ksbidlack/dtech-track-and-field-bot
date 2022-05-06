@@ -46,7 +46,7 @@ def parse_message(events, date_time):
             event_time = str(event["start"]["dateTime"])[-14:-9]
             twelve_hour_time = datetime.datetime.strptime(event_time, "%H:%M").strftime("%I:%M %p")
 
-            message += f'<@&970492351711703120> You have **{event["summary"]}** today!\n'
+            message += f'<@&970492351711703120> You have **{event["summary"].replace("Meet: ", "")}** today!\n'
             message += f'**Location:** {event["location"]}\n'
             message += f'**Time:** {str(twelve_hour_time)}\n'
     elif len(events) > 1:
@@ -55,7 +55,7 @@ def parse_message(events, date_time):
             event_time = str(event["start"]["dateTime"])[-14:-9]
             twelve_hour_time = datetime.datetime.strptime(event_time, "%H:%M").strftime("%I:%M %p")
 
-            message += f'\nEvent #{index + 1}: **{event["summary"]}**\n'
+            message += f'\nEvent #{index + 1}: **{event["summary"].replace("Meet: ", "")}**\n'
             message += f'**Location:** {event["location"]}\n'
             message += f'**Time:** {str(twelve_hour_time)}\n'
     elif not events:
@@ -67,23 +67,29 @@ def parse_message(events, date_time):
         five_days_from_today = datetime.datetime.strptime(str(date_time.date()), "%Y-%m-%d") + datetime.timedelta(days=5)
         for event in get_events(five_days_from_today):
             if "Meet" in event["summary"]:
-                message += f"\n**Reminder! There is a meet on Saturday: {event['summary']}**"
+                message += f'\n**Reminder! There is a meet on Saturday: {event["summary"].replace("Meet: ", "")}**'
 
     return message
 
 
-async def announce_calendar(channel, announce_time):
+async def announce_calendar(channel, announce_time, test_time=None):
         delta_in_seconds = get_delta(announce_time).total_seconds()
         
         print(f"Next announcement in {round(delta_in_seconds)} seconds!")
         await asyncio.sleep(delta_in_seconds)
         
-        events = get_events(announce_time)
-        message = parse_message(events, announce_time)
+        if test_time is None:
+            events = get_events(announce_time)
+            message = parse_message(events, announce_time)
+        elif type(test_time) == datetime.datetime:
+            events = get_events(test_time)
+            message = parse_message(events, test_time)
+        else:
+            raise TypeError("Datetime object not provided")
         
         print(f"Announcing! Message:\n{message}\n")
         await channel.send(message)
 
         now = datetime.datetime.now()
-        tomorrow_at_6am = now.replace(hour=6, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
-        await announce_calendar(channel, tomorrow_at_6am)
+        next_announce_time = announce_time.replace(hour=6, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
+        await announce_calendar(channel, next_announce_time)
