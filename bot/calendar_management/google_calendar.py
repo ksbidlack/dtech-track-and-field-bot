@@ -42,13 +42,12 @@ def parse_message(events, date_time):
     message = ""
 
     if len(events) == 1:
-        for event in events:
-            event_time = str(event["start"]["dateTime"])[-14:-9]
-            twelve_hour_time = datetime.datetime.strptime(event_time, "%H:%M").strftime("%I:%M %p")
+        event_time = str(event["start"]["dateTime"])[-14:-9]
+        twelve_hour_time = datetime.datetime.strptime(event_time, "%H:%M").strftime("%I:%M %p")
 
-            message += f'<@&970492351711703120> You have **{event["summary"].replace("Meet: ", "")}** today!\n'
-            message += f'**Location:** {event["location"]}\n'
-            message += f'**Time:** {str(twelve_hour_time)}\n'
+        message += f'<@&970492351711703120> You have **{event["summary"].replace("Meet: ", "")}** today!\n'
+        message += f'**Location:** {event["location"]}\n'
+        message += f'**Time:** {str(twelve_hour_time)}\n'
     elif len(events) > 1:
         message += f"<@&970492351711703120> You have **{len(events)} events** today! Here's an overview:\n"
         for index, event in enumerate(events):
