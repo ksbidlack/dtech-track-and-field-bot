@@ -94,5 +94,8 @@ async def announce_calendar(channel, announce_time, test_time=None):
         await channel.send(message)
 
         now = datetime.datetime.now()
-        next_announce_time = announce_time.replace(hour=6, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
-        await announce_calendar(channel, next_announce_time)
+        announce_time = now.replace(hour=settings.ANNOUNCE_TIME, minute=0, second=0, microsecond=0)
+        if now.hour >= settings.ANNOUNCE_TIME:
+            announce_time += datetime.timedelta(days=1)
+
+        await announce_calendar(channel, announce_time)
