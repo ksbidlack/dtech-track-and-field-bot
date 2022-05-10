@@ -62,11 +62,13 @@ def parse_message(events, date_time):
     else:
         print("The system encountered an error")
 
-    if calendar.day_name[date_time.weekday()] == "Monday":
-        five_days_from_today = datetime.datetime.strptime(str(date_time.date()), "%Y-%m-%d") + datetime.timedelta(days=5)
-        for event in get_events(five_days_from_today):
-            if "Meet" in event["summary"]:
-                message += f'\n**Reminder! There is a meet on Saturday: {event["summary"].replace("Meet: ", "")}**'
+    if calendar.day_name[date_time.date().weekday()] == "Monday":
+        for timedelta in range(1, 7):
+            temp_date = date_time + datetime.timedelta(days=timedelta)
+            
+            for event in get_events(temp_date):
+                if "Meet" in event["summary"]:
+                    message += f'\n**Reminder! There is a meet on {calendar.day_name[temp_date.date().weekday()]}: {event["summary"].replace("Meet: ", "")}**'
 
     return message
 
