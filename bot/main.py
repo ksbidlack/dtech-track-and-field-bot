@@ -18,14 +18,14 @@ async def on_ready():
             break
 
     print(f"{client.user} has connected to Discord!")
-    print(f"Client is connected to guild {guild.name}(id: {guild.id})")
+    print(f"Client is connected to guild {guild.name}(id: {guild.id})\n")
     if settings.TESTING:
         schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
         # this date will vary, depending on what is being tested
         await calendar_management.google_calendar.announce_calendar(
             channel=schedule_channel, 
             announce_time=datetime.datetime.now(), 
-            test_time=datetime.datetime.now() - datetime.timedelta(days=1)
+            test_time=datetime.datetime.now() + datetime.timedelta(days=0)
             )
     else:
         schedule_channel = client.get_channel(id=settings.SCHEDULE_CHANNEL_ID)
